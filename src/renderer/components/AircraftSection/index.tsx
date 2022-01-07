@@ -26,6 +26,7 @@ import { HiddenAddonCover } from "renderer/components/AircraftSection/HiddenAddo
 
 import "./index.css";
 import ReactMarkdown from "react-markdown";
+import { MCDUServer } from "renderer/utils/MCDUServer";
 
 let abortController: AbortController;
 
@@ -47,7 +48,7 @@ export enum InstallStatus {
     Hidden,
 }
 
-enum MsfsStatus {
+enum ProcessStatus {
     Open,
     Closed,
     Checking,
@@ -228,7 +229,8 @@ export const AircraftSection = (): JSX.Element => {
         dispatch(setInstallStatus({ addonKey: selectedAddon.key, installStatus: new_state }));
     };
 
-    const [msfsIsOpen, setMsfsIsOpen] = useState<MsfsStatus>(MsfsStatus.Checking);
+    const [msfsIsOpen, setMsfsIsOpen] = useState<ProcessStatus>(ProcessStatus.Checking);
+    const [mcduServerIsActive, setMcduServerIsActive] = useState<ProcessStatus>(ProcessStatus.Checking);
 
     const download: DownloadItem = useSelector((state: InstallerStore) =>
         state.downloads.find(download => download.id === selectedAddon.name)
@@ -239,11 +241,21 @@ export const AircraftSection = (): JSX.Element => {
     useEffect(() => {
         const checkMsfsInterval = setInterval(async () => {
             setMsfsIsOpen(
-                (await Msfs.isRunning()) ? MsfsStatus.Open : MsfsStatus.Closed
+                (await Msfs.isRunning()) ? ProcessStatus.Open : ProcessStatus.Closed
             );
         }, 500);
 
         return () => clearInterval(checkMsfsInterval);
+    }, []);
+
+    useEffect(() => {
+        const checkMcduServerInterval = setInterval(async () => {
+            setMcduServerIsActive(
+                (await MCDUServer.isRunning()) ? ProcessStatus.Open : ProcessStatus.Closed
+            );
+        }, 500);
+
+        return () => clearInterval(checkMcduServerInterval);
     }, []);
 
     useEffect(() => {
@@ -525,11 +537,20 @@ export const AircraftSection = (): JSX.Element => {
     };
 
     const ActiveState = (): JSX.Element => {
-        if (msfsIsOpen !== MsfsStatus.Closed) {
+        if (msfsIsOpen !== ProcessStatus.Closed) {
             return (
                 <StateText>
-                    {msfsIsOpen === MsfsStatus.Open
+                    {msfsIsOpen === ProcessStatus.Open
                         ? "Please close MSFS"
+                        : "Checking status..."}
+                </StateText>
+            );
+        }
+        if (mcduServerIsActive !== ProcessStatus.Closed) {
+            return (
+                <StateText>
+                    {mcduServerIsActive === ProcessStatus.Open
+                        ? "Please shut down MCDU Server"
                         : "Checking status..."}
                 </StateText>
             );
@@ -569,7 +590,7 @@ export const AircraftSection = (): JSX.Element => {
     };
 
     const ActiveInstallButton = (): JSX.Element => {
-        if (msfsIsOpen !== MsfsStatus.Closed) {
+        if ((msfsIsOpen !== ProcessStatus.Closed) || (mcduServerIsActive !== ProcessStatus.Closed)) {
             return (
                 <InstallButton className="bg-gray-700 text-grey-medium pointer-events-none">
                     Unavailable

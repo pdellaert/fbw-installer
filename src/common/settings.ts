@@ -120,6 +120,10 @@ const schema: Schema<unknown> = {
                 type: "string",
                 default: defaultCommunityDir(),
             },
+            mcduServerPort: {
+                type: "number",
+                default: 8125
+            }
         }
     },
     cache: {

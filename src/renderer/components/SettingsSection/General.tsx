@@ -158,6 +158,29 @@ const LongDateFormatItem = ({ value, setValue }: SettingItemProps<boolean>) => {
     );
 };
 
+const McduServerPortItem = ({ value, setValue }: SettingItemProps<number>) => {
+    const handleSelect = (value: number) => {
+        settings.set('mainSettings.mcduServerPort', value);
+        setValue(value);
+    };
+
+    return (
+        <SettingsItem name="MCDU Server Port">
+            <input
+                type="number"
+                inputMode="numeric"
+                min="0"
+                step="1"
+                max="65535"
+                className="text-base text-white w-60 rounded-md outline-none bg-navy border-2 border-navy px-2 cursor-pointer"
+                style={{WebkitAppearance: 'none'}}
+                onChange={event => handleSelect(event.currentTarget.valueAsNumber)}
+                defaultValue={value}
+            />
+        </SettingsItem>
+    );
+};
+
 const index = (): JSX.Element => {
     const [installPath, setInstallPath] = useSetting<string>('mainSettings.msfsPackagePath');
     const [disableVersionWarning, setDisableVersionWarning] = useSetting<boolean>('mainSettings.disableExperimentalWarning');
@@ -167,6 +190,7 @@ const index = (): JSX.Element => {
     const [autoStart, setAutoStart] = useSetting<boolean>('mainSettings.autoStartApp');
     const [dateLayout, setDateLayout] = useSetting<string>('mainSettings.dateLayout');
     const [useLongDate, setUseLongDate] = useSetting<boolean>('mainSettings.useLongDateFormat');
+    const [useMcduServerPort, setUseMcduServerPort] = useSetting<number>('mainSettings.mcduServerPort');
 
     const handleReset = async () => {
         settings.reset('mainSettings' as never);
@@ -188,6 +212,7 @@ const index = (): JSX.Element => {
                     <SeasonalEffectsItem value={seasonalEffects} setValue={setSeasonalEffects} />
                     <DateLayoutItem value={dateLayout} setValue={setDateLayout} />
                     <LongDateFormatItem value={useLongDate} setValue={setUseLongDate} />
+                    <McduServerPortItem value={useMcduServerPort} setValue={setUseMcduServerPort} />
                 </div>
             </div>
             <div className="flex flex-row justify-end mt-6">
