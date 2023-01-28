@@ -108,7 +108,7 @@ function initializeApp() {
             availablePathIndex.push('Custom');
             dialog.showMessageBox({
                 title: "FlyByWire Installer",
-                message: 'We couldn\'t determine the correct MSFS base path. Would you please help us? \n \n It is usually located somewhere here: \n "%LOCALAPPDATA%\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalState" \n \n or here: \n "%APPDATA%\\Microsoft Flight Simulator\\"',
+                message: 'We couldn\'t determine the correct MSFS base path. Would you please help us? \n \n It is usually located somewhere here: \n "%LOCALAPPDATA%\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache" \n \n or here: \n "%APPDATA%\\Microsoft Flight Simulator\\"',
                 type: 'warning',
                 buttons: availablePaths,
             }).then((promise) => {
