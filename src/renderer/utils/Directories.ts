@@ -58,7 +58,7 @@ export class Directories {
     }
 
     static inPackages(targetDir: string): string {
-        return path.join(settings.get('mainSettings.msfsBasePath') as string, 'packages', this.sanitize(targetDir));
+        return path.join(settings.get('mainSettings.msfsBasePath') as string, 'packages', this.sanitize(targetDir)).replace('LocalCache', 'LocalState');
     }
 
     static inPackageCache(addon: Addon, targetDir: string): string {
