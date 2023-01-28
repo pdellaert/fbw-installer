@@ -5,7 +5,10 @@ import * as path from "path";
 import * as os from 'os';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-const defaultCommunityDir = (): string => {
+export const msStoreBasePath = path.join(process.env.LOCALAPPDATA, "\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\");
+export const steamBasePath = path.join(process.env.APPDATA, "\\Microsoft Flight Simulator\\");
+
+const msfsBasePath = (): string => {
     if (os.platform().toString() === 'linux') {
         return 'linux';
     }
@@ -13,12 +16,18 @@ const defaultCommunityDir = (): string => {
     // Ensure proper functionality in main- and renderer-process
     let msfsConfigPath = null;
 
-    const steamPath = path.join(process.env.APPDATA, "\\Microsoft Flight Simulator\\UserCfg.opt");
-    const storePath = path.join(process.env.LOCALAPPDATA, "\\Packages\\Microsoft.FlightSimulator_8wekyb3d8bbwe\\LocalCache\\UserCfg.opt");
+    const steamPath = path.join(steamBasePath, "UserCfg.opt");
+    const storePath = path.join(msStoreBasePath, "UserCfg.opt");
 
     if (fs.existsSync(steamPath)) {
+        if (fs.existsSync(storePath)) {
+            return 'C:\\';
+        }
         msfsConfigPath = steamPath;
     } else if (fs.existsSync(storePath)) {
+        if (fs.existsSync(steamPath)) {
+            return 'C:\\';
+        }
         msfsConfigPath = storePath;
     } else {
         walk(process.env.LOCALAPPDATA, (path) => {
@@ -29,6 +38,16 @@ const defaultCommunityDir = (): string => {
     }
 
     if (!msfsConfigPath) {
+        return 'C:\\';
+    }
+
+    return path.dirname(msfsConfigPath);
+
+};
+
+export const defaultCommunityDir = (msfsBase: string): string => {
+    const msfsConfigPath = path.join(msfsBase, 'UserCfg.opt');
+    if (!fs.existsSync(msfsConfigPath)) {
         return 'C:\\';
     }
 
@@ -91,7 +110,7 @@ interface Settings {
         useLongDateFormat: boolean,
         useDarkTheme: boolean,
         allowSeasonalEffects: boolean,
-        msfsPackagePath: string,
+        msfsBasePath: string,
         configDownloadUrl: string,
     },
     cache: {
@@ -183,13 +202,17 @@ const schema: Schema<Settings> = {
                 type: "boolean",
                 default: true,
             },
+            msfsBasePath: {
+                type: "string",
+                default: msfsBasePath(),
+            },
             msfsCommunityPath: {
                 type: "string",
-                default: defaultCommunityDir(),
+                default: defaultCommunityDir(msfsBasePath()),
             },
             installPath: {
                 type: "string",
-                default: defaultCommunityDir(),
+                default: defaultCommunityDir(msfsBasePath()),
             },
             separateTempLocation: {
                 type: "boolean",
@@ -197,7 +220,7 @@ const schema: Schema<Settings> = {
             },
             tempLocation: {
                 type: "string",
-                default: defaultCommunityDir(),
+                default: defaultCommunityDir(msfsBasePath()),
             },
             configDownloadUrl: {
                 type: "string",
