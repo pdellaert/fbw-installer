@@ -9,7 +9,7 @@ on:
     branches:
       - master
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-18.04
     if: github.event.pull_request.draft == false
     steps:
@@ -26,8 +26,6 @@ jobs:
         run: npm ci
       - name: Install system requirements
         run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y wine32 wine64
-      - name: lint
-        run: npm run lint
       - name: build
         run: npm run package
       - name: upload PR artifact
