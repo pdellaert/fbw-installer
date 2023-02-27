@@ -6,8 +6,8 @@ import * as os from 'os';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const defaultCommunityDir = (): string => {
-    if (os.platform().toString() === 'linux') {
-        return 'linux';
+    if (['linux', 'darwin'].includes(os.platform().toString())) {
+        return 'linux-or-darwin';
     }
 
     // Ensure proper functionality in main- and renderer-process
