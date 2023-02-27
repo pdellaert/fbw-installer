@@ -14,8 +14,17 @@ export const configurationSlice = createSlice({
         addPublisher: (state, action: TypedAction<{ publisher: Publisher }>) => {
             state.publishers.push(action.payload.publisher);
         },
+        removePublisher: (state, action: TypedAction<{ publisher: Publisher }>) => {
+            const newPublishers: Publisher[] = [];
+            for (const publisher of state.publishers) {
+                if (publisher.name !== action.payload.publisher.name) {
+                    newPublishers.push(publisher);
+                }
+            }
+            state.publishers = newPublishers;
+        },
     },
 });
 
-export const { setConfiguration, addPublisher } = configurationSlice.actions;
+export const { setConfiguration, addPublisher, removePublisher } = configurationSlice.actions;
 export default configurationSlice.reducer;

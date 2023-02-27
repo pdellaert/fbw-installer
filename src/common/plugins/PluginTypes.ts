@@ -7,4 +7,5 @@ export interface PluginAssetPayload extends PluginAsset {
 export interface PluginPayload {
     distFile: PluginDistributionFile,
     assets: PluginAssetPayload[],
+    verified?: boolean,
 }

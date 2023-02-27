@@ -6,6 +6,7 @@ import { SideBar, SideBarLink, SideBarTitle } from "renderer/components/SideBar"
 import CustomizationSettings from './Customization';
 import DownloadSettings from './Download';
 import DeveloperSettings from './Developer';
+import PluginSettings from './Plugins';
 import settings from 'common/settings';
 import * as packageInfo from '../../../../package.json';
 import { Button, ButtonType } from '../Button';
@@ -76,6 +77,12 @@ export const SettingsSection = (): JSX.Element => {
                         </span>
                     </SideBarLink>
 
+                    <SideBarLink to="/settings/plugins">
+                        <span className="text-3xl font-manrope font-semibold">
+                            Plugins
+                        </span>
+                    </SideBarLink>
+
                     {/*<SideBarLink to="/settings/customization">*/}
                     {/*    <span className="text-2xl font-manrope font-bold">*/}
                     {/*        Customization*/}
@@ -113,6 +120,10 @@ export const SettingsSection = (): JSX.Element => {
 
                     <Route path="/settings/download">
                         <DownloadSettings />
+                    </Route>
+
+                    <Route path="/settings/plugins">
+                        <PluginSettings />
                     </Route>
 
                     <Route path="/settings/customization">

@@ -23,8 +23,11 @@ export default {
     plugins: {
         promptInstallFromUrl: 'plugins/promptInstallFromUrl',
         installFromUrl: 'plugins/installFromUrl',
+        deletePlugin: 'plugins/deletePlugin',
         checkForUpdates: 'plugins/checkForUpdates',
         getPluginsToLoad: 'plugins/getPluginsToLoad',
+        getPluginFromUrl: 'plugins/getPluginFromUrl',
+        getPluginFromPath: 'plugins/getPluginFromPath',
     },
     sentry: {
         requestSessionID: 'sentry/requestSessionID',
