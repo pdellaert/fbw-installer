@@ -48,6 +48,7 @@ export class PluginUtils {
     static async verifyPlugin(plugin: PluginPayload): Promise<PluginPayload> {
         plugin.verified = false;
         if (plugin.distFile.signature === undefined) {
+            console.log(`[PluginUtils](verifyPlugin) ${plugin.distFile.metadata.id} does not have a signature and can not be verified`);
             return plugin;
         }
 
