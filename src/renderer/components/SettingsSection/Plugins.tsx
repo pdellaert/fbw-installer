@@ -25,7 +25,16 @@ const index = (): JSX.Element => {
         <div className="flex flex-row items-center justify-between py-3.5">
             <p className="m-2 w-1/4">{plugin.distFile.metadata.name}</p>
             <p className="m-2 w-1/4">{plugin.distFile.metadata.version}</p>
-            <p className="m-2 w-1/4">{plugin.verified !== undefined && plugin.verified ? '✅' : '❌' }</p>
+            <p className="m-2 w-1/4">
+                { plugin.verified !== undefined && plugin.verified ? (
+                    <span title="Valid signature provided">✅</span>
+                ) : plugin.distFile.signature !== undefined ? (
+                    <span title="Invalid signature provided">⚠️</span>
+                ) : (
+                    <span title="No signature provided">⚠️</span>
+                )
+                }
+            </p>
             <p className="m-2 w-1/4 flex justify-end">
                 <button className="button button-neutral p-3 mr-5 flex flex-row justify-center items-center text-2xl" onClick={() => reloadPlugin(plugin)} disabled={isReloading}>
                     { isReloading ? (
