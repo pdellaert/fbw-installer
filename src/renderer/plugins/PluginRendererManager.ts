@@ -15,7 +15,7 @@ export class PluginRendererManager {
 
             switch (asset.type) {
                 case PluginAssetType.ConfigurationExtension: {
-                    this.processConfigurationExtensionAsset(asset, 'loadPlugin');
+                    this.processConfigurationExtensionAsset(asset, 'loadPlugin', pluginPayload.verified !== undefined ? pluginPayload.verified : false);
                     break;
                 }
                 default: console.error(`[PluginSystem] Unsupported asset type '${asset.type}' for asset '${asset.file}'`);
@@ -31,7 +31,7 @@ export class PluginRendererManager {
 
             switch (asset.type) {
                 case PluginAssetType.ConfigurationExtension: {
-                    this.processConfigurationExtensionAsset(asset, 'unloadPlugin');
+                    this.processConfigurationExtensionAsset(asset, 'unloadPlugin', pluginPayload.verified !== undefined ? pluginPayload.verified : false);
                     break;
                 }
                 default: console.error(`[PluginSystem] Unload - Unsupported asset type '${asset.type}' for asset '${asset.file}'`);
@@ -40,7 +40,7 @@ export class PluginRendererManager {
         console.log(`[PluginSystem] Done unloading plugin ${pluginPayload.distFile.metadata.id}@${pluginPayload.distFile.metadata.version}.`);
     }
 
-    private static processConfigurationExtensionAsset(assetPayload: PluginAssetPayload, pluginAction: string) {
+    private static processConfigurationExtensionAsset(assetPayload: PluginAssetPayload, pluginAction: string, pluginVerified: boolean) {
         const configurationExtension = JSON.parse(new TextDecoder().decode(assetPayload.buffer)) as ConfigurationExtension;
 
         // TODO verify config extension
@@ -62,6 +62,7 @@ export class PluginRendererManager {
                                     console.warn(`[PluginSystem](processConfigurationExtensionAsset) Publisher '${publisher.key}' of directive #${i} dropped because it was already declared`);
                                     continue;
                                 }
+                                publisher.verified = pluginVerified;
                                 console.log(`[PluginSystem](processConfigurationExtensionAsset) Directive #${i} addPublisher ${publisher.key}`);
                                 store.dispatch(addPublisher({ publisher }));
                                 break;

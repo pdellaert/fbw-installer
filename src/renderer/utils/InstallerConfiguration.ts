@@ -345,6 +345,7 @@ export type Publisher = {
     defs?: Definition[],
     addons: Addon[],
     buttons?: PublisherButton[],
+    verified?: boolean,
 }
 
 export interface Configuration {
